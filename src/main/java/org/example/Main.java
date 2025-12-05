@@ -1,17 +1,30 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import org.example.tasks.ParallelQuickSortTask;
+import org.example.utils.Benchmarker;
+import org.example.utils.IntegerArrayGenerator;
+import org.example.utils.Quicksort;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.Consumer;
+
+public class Main {
+    @SuppressWarnings("unchecked")
+    public static void main(String[] args) {
+        Benchmarker<Integer> benchmarker = new Benchmarker<>();
+        try (ForkJoinPool pool = new ForkJoinPool(4)) {
+            benchmarker.benchmark(
+                    new String[]{"Parallel quicksort", "Sequential quicksort"},
+                    () -> IntegerArrayGenerator.generateArray(100_000_000),
+                    new Consumer[]{
+                            (arr) -> pool.invoke(new ParallelQuickSortTask<>((Integer[]) arr, 0, ((Integer[]) arr).length - 1)),
+                            (arr) -> Quicksort.quickSort((Integer[]) arr, 0, ((Integer[]) arr).length - 1)
+                    },
+                    2,
+                    5,
+                    0.95,
+                    1
+            );
         }
     }
 }
