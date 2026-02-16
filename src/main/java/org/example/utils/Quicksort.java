@@ -1,5 +1,7 @@
 package org.example.utils;
 
+import java.util.Random;
+
 public class Quicksort {
     public static <T extends Comparable<T>> void quickSort(T[] array, int l, int h) {
         if (l < h) {
@@ -10,6 +12,9 @@ public class Quicksort {
     }
 
     public static <T extends Comparable<T>> int[] partition(T[] array, int l, int h) {
+        int pivotIndex = l + new Random().nextInt(h - l + 1);
+
+        swap(array, pivotIndex, h);
         T pivot = array[h];
         int L = l;
         int i = l;
