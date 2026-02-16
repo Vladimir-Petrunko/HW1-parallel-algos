@@ -20,9 +20,9 @@ public class ParallelQuickSortTask<T extends Comparable<T>> extends RecursiveAct
         if (high - low <= Constants.THRESHOLD) {
             Quicksort.quickSort(array, low, high);
         } else {
-            int pivot = Quicksort.partition(array, low, high);
-            ParallelQuickSortTask<T> leftTask = new ParallelQuickSortTask<>(array, low, pivot - 1);
-            ParallelQuickSortTask<T> rightTask = new ParallelQuickSortTask<>(array, pivot + 1, high);
+            int[] pivots = Quicksort.partition(array, low, high);
+            ParallelQuickSortTask<T> leftTask = new ParallelQuickSortTask<>(array, low, pivots[0] - 1);
+            ParallelQuickSortTask<T> rightTask = new ParallelQuickSortTask<>(array, pivots[1] + 1, high);
             invokeAll(leftTask, rightTask);
         }
     }

@@ -3,28 +3,37 @@ package org.example.utils;
 public class Quicksort {
     public static <T extends Comparable<T>> void quickSort(T[] array, int l, int h) {
         if (l < h) {
-            int pivot = partition(array, l, h);
-            quickSort(array, l, pivot - 1);
-            quickSort(array, pivot + 1, h);
+            int[] pivots = partition(array, l, h);
+            quickSort(array, l, pivots[0] - 1);
+            quickSort(array, pivots[1] + 1, h);
         }
     }
 
-    public static <T extends Comparable<T>> int partition(T[] array, int l, int h) {
+    public static <T extends Comparable<T>> int[] partition(T[] array, int l, int h) {
         T pivot = array[h];
-        int i = l - 1;
-        for (int j = l; j < h; j++) {
-            if (array[j].compareTo(pivot) <= 0) {
+        int L = l;
+        int i = l;
+        int R = h;
+
+        while (i <= R) {
+            int cmp = array[i].compareTo(pivot);
+            if (cmp < 0) {
+                swap(array, L, i);
+                L++;
                 i++;
-                swap(array, i, j);
+            } else if (cmp > 0) {
+                swap(array, i, R);
+                R--;
+            } else {
+                i++;
             }
         }
-        swap(array, i + 1, h);
-        return i + 1;
+        return new int[]{L, R};
     }
 
     private static <T extends Comparable<T>> void swap(T[] array, int i, int j) {
-        T t = array[i];
+        T temp = array[i];
         array[i] = array[j];
-        array[j] = t;
+        array[j] = temp;
     }
 }
